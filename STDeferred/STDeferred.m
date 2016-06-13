@@ -72,15 +72,11 @@ NSString * const STDeferredErrorDomain = @"STDeferredErrorDomain";
         });
     }
     
-    __block NSArray *blockDeferreds = deferreds;
+    __unsafe_unretained NSArray *weakDeferreds = deferreds;
     deferred.canceller(^{
-        for(STDeferred *deferred in blockDeferreds) {
+        for(STDeferred *deferred in weakDeferreds) {
             [deferred cancel];
         }
-    });
-    
-    deferred.always(^(id obj){
-        blockDeferreds = nil;
     });
     
     return deferred;
@@ -196,7 +192,7 @@ NSString * const STDeferredErrorDomain = @"STDeferredErrorDomain";
 {
     STDeferred *deferred = [STDeferred deferred];
 
-    __weak typeof(id) weakSelf = self;
+    __unsafe_unretained typeof(id) weakSelf = self;
     deferred.canceller(^{
         [weakSelf cancel];
     });
@@ -209,7 +205,7 @@ NSString * const STDeferredErrorDomain = @"STDeferredErrorDomain";
     [self then:^(id resultObject) {
         id ret = successBlock(resultObject);
         if([ret isKindOfClass:[STDeferred class]]) {
-            __weak STDeferred *resultDeferred = ret;
+            __unsafe_unretained STDeferred *resultDeferred = ret;
             [[resultDeferred then:^(id newResultObject) {
                 [deferred resolve:newResultObject];
             }] fail:^(id newResultObject) {
@@ -232,7 +228,7 @@ NSString * const STDeferredErrorDomain = @"STDeferredErrorDomain";
     [self fail:^(id resultObject) {
         id ret = failBlock(resultObject);
         if([ret isKindOfClass:[STDeferred class]]) {
-            __weak STDeferred *resultDeferred = ret;
+            __unsafe_unretained STDeferred *resultDeferred = ret;
             [[resultDeferred then:^(id newResultObject) {
                 [deferred resolve:newResultObject];
             }] fail:^(id newResultObject) {
