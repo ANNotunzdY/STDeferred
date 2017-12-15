@@ -44,7 +44,7 @@ NSString * const STDeferredErrorDomain = @"STDeferredErrorDomain";
 {
     STDeferred *deferred = [STDeferred deferred];
     
-    int deferredsCount = deferreds.count;
+    NSInteger deferredsCount = deferreds.count;
     __block int resolveCount = 0;
     
     NSMutableArray *results = [NSMutableArray arrayWithCapacity:deferredsCount];
